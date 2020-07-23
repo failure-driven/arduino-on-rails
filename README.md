@@ -8,6 +8,8 @@ For all the Ruby on Rails developers out there who want to get into hardware/Ard
 
 ## Episodes
 
+- [EP 00 click tracker display](EP_00_click_tracker_display/README.md)
+
 1. Blink an LED from Rails via Arduino
    - across serial from a local dev server
 1. Blink an LED from Rails
