@@ -1,0 +1,1 @@
+json.array! @counters, :id, :name, :count
