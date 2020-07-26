@@ -2,6 +2,29 @@
 
 1. finally try to get the count using Arduino ...
 
+1. for fun let's also add an **`X-Request-Count`** header. This is not a standard header in any way but will come back as part of every request
+
+   `app/middleware/click_counter.rb`
+
+   ```ruby
+   def call(env)
+      @status, @headers, @response = @app.call(env)
+      @count = Counter.increment_default_counter
+      @headers.merge!('X-Request-Count' => @count.to_s)
+      [@status, @headers, self]
+   end
+   ```
+
+   viewing headers using `curl` and grepping for headers starting in `X-R`
+
+   ```sh
+   curl -I http://localhost:3000 | grep X-R
+
+   X-Request-Count: 20
+   X-Request-Id: 51d3035f-7c8d-4ea2-a3ed-01d857fa05e1
+   X-Runtime: 0.022604
+   ```
+
 1. let's add some default pages
 
    we could just make the welcome rails page work in production by explicitly adding it to the routes file as the root

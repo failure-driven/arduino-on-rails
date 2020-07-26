@@ -6,6 +6,7 @@ class ClickCounter
   def call(env)
     @status, @headers, @response = @app.call(env)
     @count = Counter.increment_default_counter
+    @headers.merge!('X-Request-Count' => @count.to_s)
     [@status, @headers, self]
   end
 
