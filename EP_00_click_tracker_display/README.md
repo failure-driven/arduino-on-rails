@@ -2,6 +2,52 @@
 
 1. Next we will want to increment the counter for any page request using Rack Middleware ...
 
+1. but the `CTRL-C` blows up with an interrupt and a huge stack trace, I know why not catch the interrupt and just gracefully catch the error
+
+   First tried wrapping it in excpetion handling
+
+   ```sh
+   bin/rails runner 'begin; while true; Counter.increment_default_counter; print "."; sleep(0.2); end; resuce Interrupt => e; puts "END, ${e}"; end;'
+   ```
+
+   didn't seem to work :(
+
+   searching for _"rails runner interrupt infinite loop"_
+
+   found this https://stackoverflow.com/questions/4508764/how-can-i-add-a-user-interrupt-to-an-infinite-loop
+
+   which did work
+
+   ```sh
+   bin/rails runner 'exit_requested = false; Kernel.trap( "INT" ) { exit_requested = true }; while !exit_requested; Counter.increment_default_counter; print "."; sleep(0.2); end'
+   ```
+
+1. let's add a `Counter.increment_default_counter` function to incremenet our default Counter
+
+   ```ruby
+   class Counter < ApplicationRecord
+      def self.increment_default_counter
+         Counter
+            .find_or_create_by(name: 'default')
+            .increment!(:count)
+      end
+   end
+   ```
+
+   which can be called with
+
+   ```sh
+   bin/rails runner 'Counter.increment_default_counter'
+   ```
+
+   and made to run indefinitely every 200ms with
+
+   ```sh
+   bin/rails runner 'while true; Counter.increment_default_counter; print "."; sleep(0.2); end'
+   ```
+
+   and `CTRL-C` to kill it
+
 1. And a controller to view the count
 
    ```sh
