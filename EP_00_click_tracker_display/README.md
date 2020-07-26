@@ -2,7 +2,45 @@
 
 1. finally try to get the count using Arduino ...
 
-1. now to deploy to heroku
+1. let's add some default pages
+
+   we could just make the welcome rails page work in production by explicitly adding it to the routes file as the root
+
+   ```ruby
+   Rails.application.routes.draw do
+      ...
+      root to: "rails/welcome#index"
+   end
+   ```
+
+   Another deploy which needs a tweak to the deploy script
+
+   `bin/heroku_deploy`
+
+   ```ruby
+   # first time deploy
+   git subtree push --prefix EP_00_click_tracker_display/ heroku master
+
+   # subsequent time
+   git push --force heroku `git subtree split --prefix EP_00_click_tracker_display master`:master
+   ```
+
+   **WHY???**
+
+   ```sh
+   heroku open
+
+   # also
+   heroku run rails runner 'puts Counter.all.map(&:attributes)'
+
+   # and hit the counter some
+   heroku run rails runner 'exit_requested = false; Kernel.trap( "INT" ) { exit_requested = true }; while !exit_requested; Counter.increment_default_counter; print "."; sleep(0.2); end'
+
+   # ofcouse so does curl
+   curl https://ep-0-click-tracker-display.herokuapp.com/counters
+   ```
+
+1. now to deploy to heroku using a simple script `bin/heroku_deploy`
 
    ```sh
    HEROKU_APP_NAME=ep-0-click-tracker-display bin/heroku_deploy

@@ -16,8 +16,10 @@ heroku buildpacks
 
 echo "Performing heroku deployment"
 pushd ..
-git subtree push --prefix EP_00_click_tracker_display/ heroku master
-#git push --force heroku `git subtree split --prefix EP_00_click_tracker_display master`:master
+# first time
+#git subtree push --prefix EP_00_click_tracker_display/ heroku master
+# subsequent time
+git push --force heroku `git subtree split --prefix EP_00_click_tracker_display master`:master
 
 echo "Performing database migrations"
 heroku run --exit-code bin/rake db:migrate
