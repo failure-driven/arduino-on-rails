@@ -1,6 +1,26 @@
 # Episode 00 - click tracker display
 
-1. now to deploy ...
+1. finally try to get the count using Arduino ...
+
+1. now to deploy to heroku
+
+   ```sh
+   HEROKU_APP_NAME=ep-0-click-tracker-display bin/heroku_deploy
+   ```
+
+   finally visit the page
+
+   ```sh
+   heroku open
+   ```
+
+   :( there is no page
+
+   https://ep-0-click-tracker-display.herokuapp.com/
+
+   but there are counters
+
+   https://ep-0-click-tracker-display.herokuapp.com/counters
 
 1. for good measure let's have the middleware update a header with the current count
 
@@ -225,6 +245,7 @@
 1. create a minimal `rails new`
    ```
    rails new EP_00_click_tracker_display \
+     --database=postgresql               \
      --skip-action-mailer                \
      --skip-action-mailbox               \
      --skip-action-text                  \

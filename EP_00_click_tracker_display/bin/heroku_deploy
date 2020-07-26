@@ -1,0 +1,30 @@
+#!/usr/bin/env bash
+
+set -eu
+
+heroku whoami
+
+echo "Create heroku app (unless it already exists)"
+heroku apps:create "$HEROKU_APP_NAME" --no-remote || echo "app already exists"
+
+echo "Add git remote for heroku"
+git remote rm heroku || echo "heroku remote did not exist"
+git remote add heroku "https://git.heroku.com/$HEROKU_APP_NAME.git"
+
+echo "Checking build packs"
+heroku buildpacks
+
+echo "Performing heroku deployment"
+pushd ..
+git subtree push --prefix EP_00_click_tracker_display/ heroku master
+#git push --force heroku `git subtree split --prefix EP_00_click_tracker_display master`:master
+
+echo "Performing database migrations"
+heroku run --exit-code bin/rake db:migrate
+
+echo "Performing process restart"
+heroku ps:restart
+
+echo "Deployment completed"
+popd
+
