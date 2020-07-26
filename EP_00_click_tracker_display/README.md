@@ -1,5 +1,41 @@
 # Episode 00 - click tracker display
 
+1. now to deploy ...
+
+1. for good measure let's have the middleware update a header with the current count
+
+   `app/middleware/click_counter.rb`
+
+   ```ruby
+   def call(env)
+      @status, @headers, @response = @app.call(env)
+      @count = Counter.increment_default_counter
+      [@status, @headers, self]
+   end
+
+   def each(&block)
+      block.call("<!-- Counter: #{@count} -->\n") if @headers['Content-Type'].include?('text/html')
+      @response.each(&block)
+   end
+   ```
+
+   and add a to string method for a counter
+
+   `app/models/counter.rb`
+
+   ```ruby
+   class Counter < ApplicationRecord
+      ...
+      def to_s
+         count.to_s
+      end
+   end
+   ```
+
+   now at the top of every html page we get a comment with the counter
+
+   view-source:http://localhost:3000/
+
 1. Let's add some Rack Middleware to increment the counter on every page visit
 
    ```sh

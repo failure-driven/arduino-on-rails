@@ -4,4 +4,8 @@ class Counter < ApplicationRecord
       .find_or_create_by(name: 'default')
       .increment!(:count)
   end
+
+  def to_s
+    count.to_s
+  end
 end
