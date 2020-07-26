@@ -15,6 +15,9 @@ require "action_view/railtie"
 # require "sprockets/railtie"
 # require "rails/test_unit/railtie"
 
+$LOAD_PATH << File.join(__dir__, '..', 'app', 'middleware')
+require 'click_counter'
+
 # Require the gems listed in Gemfile, including any gems
 # you've limited to :test, :development, or :production.
 Bundler.require(*Rails.groups)
@@ -31,5 +34,7 @@ module EP00ClickTrackerDisplay
 
     # Don't generate system test files.
     config.generators.system_tests = nil
+
+    config.middleware.use ClickCounter
   end
 end

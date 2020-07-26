@@ -1,6 +1,50 @@
 # Episode 00 - click tracker display
 
-1. Next we will want to increment the counter for any page request using Rack Middleware ...
+1. Let's add some Rack Middleware to increment the counter on every page visit
+
+   ```sh
+   mkdir app/middleware
+
+   cat > app/middleware/click_counter.rb
+   class ClickCounter
+      def initialize(app)
+         @app = app
+      end
+
+      def call(env)
+         status, headers, response = @app.call(env)
+         Counter.increment_default_counter
+         [status, headers, response]
+      end
+   end
+   ^D
+   ```
+
+   and add the middleware to the end of the middleware stack
+
+   `config/application.rb`
+
+   ```ruby
+   $LOAD_PATH << File.join(__dir__, '..', 'app', 'middleware')
+   require 'click_counter'
+
+   ...
+   class Application < Rails::Application
+      ...
+      config.middleware.use ClickCounter
+   end
+   ```
+
+   Now any visit to the site will increment the counter
+
+   - http://localhost:3000
+   - http://localhost:3000/counter
+
+   and view the counter without calling the page
+
+   ```sh
+   bin/rails runner 'puts Counter.all.map(&:attributes)'
+   ```
 
 1. but the `CTRL-C` blows up with an interrupt and a huge stack trace, I know why not catch the interrupt and just gracefully catch the error
 
