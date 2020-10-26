@@ -1,6 +1,55 @@
 # Episode 00 - click tracker display
 
-1. finally try to get the count using Arduino ...
+1. finally try to get the count using Arduino, or ESP32 with WiFi
+
+  - connect to WiFi
+
+  ```c
+  WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
+  Serial.print("Waiting for WiFi... ");
+
+  while (WiFi.status() != WL_CONNECTED) { // Wait for the Wi-Fi to connect
+    Serial.print(".");
+    delay(500);
+  }
+  ```
+
+  - fetch https request
+
+  ```c
+  WiFiClientSecure *client = new WiFiClientSecure;
+  if(client) {
+    client -> setCACert(DIGICERT_CA_CERTIFICATE);
+    if ((WiFi.status() == WL_CONNECTED)) {
+      HTTPClient https;
+      https.begin(*client, URL);
+      int httpsCode = https.GET();
+      if (httpsCode > 0) {
+        String payload = https.getString();
+      }
+    }
+  }
+  ```
+
+  - parse out the JSON
+
+  ```c
+  DynamicJsonDocument doc(1024);
+  DeserializationError error = deserializeJson(doc, payload);
+  if(error) {
+    Serial.print("deserializeJson() failed: ");
+    Serial.print(error.c_str());
+    Serial.println(payload);
+    return;
+  }
+  long countStat = doc[0]["count"];
+  ```
+
+  - write out to 7seg display
+
+  ```c
+  showNumber(countStat);
+  ```
 
 1. for fun let's also add an **`X-Request-Count`** header. This is not a standard header in any way but will come back as part of every request
 
