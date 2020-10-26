@@ -329,9 +329,11 @@
 - ESP8266 (80Mhz) with WiFi and Bluetooth
 - Adafruit FONA - with GSM
 - Arduino nano 33 BLE sense - Machine learning with Tiny ML
+- NodeMCU
+- Particle
 
 **NOT** _Raspberry Pi, micro:bit, OrangeCrab FPGA (Field Programmable Gate
-  Array)_
+  Array), arm MBED, Atmel AVR, ARM, Microchip PIC, 8051_
 
 ---
 
@@ -378,10 +380,16 @@ TODO ... demo + code + architecture
 
 ---
 
+<!-- effect=matrix -->
+
+---
+
 ## Next steps
 
 - get a cheap Arduino Uno kit with sensors _~$20_
 - videos -> http://bit.ly/failure-driven
+- Join me for https://www.electronicwings.com/contest2020
+  - submit a project by 15th Dec 2020
 
 ---
 
