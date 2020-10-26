@@ -14,6 +14,8 @@
   ]
 */
 
+//#define DEBUG // turn on debugging statements
+
 #include <WiFi.h>
 #include <HTTPClient.h>
 #include <WiFiClientSecure.h>
@@ -61,7 +63,7 @@ const int pinSCK = 18;  // for CLK - ESP32 SCK pin 18
 const int pinSS = 5;    // for CS  - ESP32 SS pin 5
 LedControl ledControl = LedControl(pinMISO, pinSCK, pinSS, 1); // 1 for single MAZ72XX
 
-void showNumber(long number) {
+void displayNumber(long number) {
   // either perform this programatically or dig into the lib to
   // work out how to pass an 8 digit number and display it
   // https://github.com/noah1510/LedController
@@ -75,39 +77,43 @@ void showNumber(long number) {
   ledControl.setDigit(0, 0, (number / 1) % 10, false);
 }
 
-void fetchStats() {
+long extractCountStat(String payload){
+  DynamicJsonDocument doc(1024);
+  DeserializationError error = deserializeJson(doc, payload);
+  if(error) {
+    Serial.print("deserializeJson() failed: ");
+    Serial.print(error.c_str());
+    Serial.println(payload);
+    return 0;
+  }
+  long countStat = doc[0]["count"];
+  return countStat;
+}
+
+void fetchStats(char* url, long (*extractCountStatFunction)(String payload), void (*displayNumber)(long number)) {
   WiFiClientSecure *client = new WiFiClientSecure;
   if(client) {
     client -> setCACert(DIGICERT_CA_CERTIFICATE);
-
-    if ((WiFi.status() == WL_CONNECTED)) { //Check the current connection status
+    if ((WiFi.status() == WL_CONNECTED)) {
       HTTPClient https;
-
-      https.begin(*client, heroku_clicks_url);
+      https.begin(*client, url);
       int httpsCode = https.GET();
-
       if (httpsCode > 0) { //Check for the returning code
         String payload = https.getString();
-
 #ifdef DEBUG
         Serial.println(httpsCode);
         Serial.println(payload);
 #endif
-
-        DynamicJsonDocument doc(1024);
-        DeserializationError error = deserializeJson(doc, payload);
-        if(error) {
-          Serial.print("deserializeJson() failed: ");
-          Serial.print(error.c_str());
-          Serial.println(payload);
-          return;
-        }
-        long countStat = doc[0]["count"];
+        long countStat = (*extractCountStatFunction)(payload);
         Serial.println(countStat);
-            showNumber(countStat);
+        (*displayNumber)(countStat);
       } 
       else {
         Serial.println("Error on HTTP request");
+#ifdef DEBUG
+        Serial.println(httpsCode);
+        Serial.println(https.getString());
+#endif
       }
       https.end(); //Free the resources
     }
@@ -142,6 +148,6 @@ void setup() {
 }
 
 void loop() {
-  fetchStats();
+  fetchStats((char*)heroku_clicks_url, extractCountStat, displayNumber);
   delay(1000); // 1 second between stats update
 }
