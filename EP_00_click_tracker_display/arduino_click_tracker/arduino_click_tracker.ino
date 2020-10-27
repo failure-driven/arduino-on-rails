@@ -20,9 +20,7 @@
 #include <HTTPClient.h>
 #include <WiFiClientSecure.h>
 #include <ArduinoJson.h>
-
-const char* WIFI_SSID = "ssid";           // replace with SSID
-const char* WIFI_PASSWORD = "password";   // repalce with password
+#include "secrets.h" // configure with WiFi SSID and password
 
 const char* heroku_clicks_url = "https://ep-0-click-tracker-display.herokuapp.com/counters";
 
