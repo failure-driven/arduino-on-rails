@@ -12,7 +12,7 @@
 - [slides.md](slides.md)
 
 - [follow me on twitter](https://twitter.com/saramic)
-- [**SUBSCRIBE** ![YT logo](https://www.youtube.com/about/static/svgs/icons/brand-resources/YouTube-logo-full_color_light.svg) to my YouTube Failure-Driven](https://www.youtube.com/channel/UCVWaSXuexIlR6raOcm3m2Hw)
+- [<img src="https://www.youtube.com/about/static/svgs/icons/brand-resources/YouTube-logo-full_color_light.svg" width="100px"> **SUBSCRIBE** to my YouTube Failure-Driven](https://www.youtube.com/channel/UCVWaSXuexIlR6raOcm3m2Hw)
 
 - Join me for [Electronic Wings Contest 2020](https://www.electronicwings.com/contest2020)
   - submit a project by 15th Dec 2020
