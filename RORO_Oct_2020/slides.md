@@ -453,7 +453,7 @@ middleware to contact a vanilla arduino via the serial port?
 
 ---
 
-TODO ... code and demo
+Maybe next time?
 
 ---
 
@@ -465,7 +465,15 @@ _from my examples, YES_
 
 ## Cloud Scale
 
-TODO ... demo + code + architecture
+weighing scale integration via AWS IoT
+
+1. read a scale
+1. publish data to AWS IoT cloud as MQTT
+1. subscribe a website via websockets
+1. real time updates from scale to website
+
+
+Maybe next time?
 
 ---
 
@@ -476,7 +484,7 @@ TODO ... demo + code + architecture
 ## Next steps
 
 - get a cheap Arduino Uno kit with sensors _~$20_
-- videos -> http://bit.ly/failure-driven
+- videos -> http://bit.ly/roroOct2020
 - Join me for Electronc Wings Context 2020
   - submit a hardware project by 15th Dec 2020
 
