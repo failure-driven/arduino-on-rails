@@ -39,7 +39,7 @@
 
 ## What is Rails?
 
-- a "computer" who's interface is Web Pages and REST end points?
+- a "computer" who's interface are REST end points?
 
 ---
 
@@ -349,9 +349,98 @@ _rails is ruby and Arduino is C++ in 32kb_
 
 ## ESP32 has Wifi
 
-page hit counter example
+Generate a model
 
-TODO ... code and demo
+```
+rails generate model Counter name:string count:bigint
+```
+
+find or create and increment a default counter
+
+```
+ 1: class Counter < ApplicationRecord
+ 2:   def self.increment_default_counter
+ 3:     Counter
+ 4:       .find_or_create_by(name: 'default')
+ 5:       .increment!(:count)
+ 6:   end
+ 7:
+ 8:   def to_s
+ 9:     count.to_s
+10:   end
+11: end
+```
+
+---
+
+click counter middleware
+
+```
+cat app/middleware/click_counter.rb
+
+ 1: def call(env)
+ 2:   @status, @headers, @response = @app.call(env)
+ 3:   @count = Counter.increment_default_counter
+ 4:   @headers.merge!('X-Request-Count' => @count.to_s)
+ 5:   [@status, @headers, self]
+ 6: end
+ 7:
+ 8: def each(&block)
+ 9:   block.call("<!-- Counter: #{@count} -->\n") if @headers['Content-Type'].include?('text/html')
+10:   @response.each(&block)
+11: end
+```
+
+configure rails to use the middleware
+
+```
+ 1: class Application < Rails::Application
+ 2:    ...
+ 3:    config.middleware.use ClickCounter
+ 4: end
+```
+
+---
+
+take a look at the home page and the `/counters` endpoint
+
+http://bit.ly/roroOct2020
+
+---
+
+get a bunch of libs
+
+```
+ 1: #include <WiFi.h>
+ 2: #include <HTTPClient.h>
+ 3: #include <WiFiClientSecure.h>
+ 4: #include <ArduinoJson.h>
+```
+
+and the Certificate Authority for your https certificate
+
+```
+ 1: // Heroku certified by DigiCert
+ 2: // DigiCert High Assurance EV Root CA
+ 3: // https://www.digicert.com/kb/digicert-root-certificates.htm
+ 4: // Serial #: 02:AC:5C:26:6A:0B:40:9B:8F:0B:79:F2:AE:46:25:77
+ 5: static const char DIGICERT_CA_CERTIFICATE[] PROGMEM = R"EOF(
+ 6: -----BEGIN CERTIFICATE-----
+ 7: MIIDxTCCAq2gAwIBAgIQAqxcJmoLQJuPC3nyrkYldzANBgkqhkiG9w0BAQUFADBs
+ 8: MQswCQYDVQQGEwJVUzEVMBMGA1UEChMMRGlnaUNlcnQgSW5jMRkwFwYDVQQLExB3
+ 9: ...
+10: Yzi9RKR/5CYrCsSXaQ3pjOLAEFe4yHYSkVXySGnYvCoCWw9E1CAx2/S6cCZdkGCe
+11: vEsXCS+0yx5DaMkHJ8HSXPfqIbloEpw8nL+e/IBcm2PN7EeqJSdnoDfzAIJ9VNep
+12: +OkuE6N36B9K
+13: -----END CERTIFICATE-----
+14: )EOF";
+```
+
+---
+
+and a bunch of WiFi, connect, json parse, code
+
+let's see the counter in action!
 
 ---
 
@@ -388,8 +477,8 @@ TODO ... demo + code + architecture
 
 - get a cheap Arduino Uno kit with sensors _~$20_
 - videos -> http://bit.ly/failure-driven
-- Join me for https://www.electronicwings.com/contest2020
-  - submit a project by 15th Dec 2020
+- Join me for Electronc Wings Context 2020
+  - submit a hardware project by 15th Dec 2020
 
 ---
 
@@ -397,9 +486,6 @@ TODO ... demo + code + architecture
 
 - @saramic (github, twitter)
 - #ArduinoOnRails (twitter)
-- slides
-  - https://github.com/failure-driven/arduino-on-rails
-  - http://bit.ly/arduino-on-rails
-- videos
-  - subscribe http://bit.ly/failure-driven
+- slides, links and code
+  - http://bit.ly/roroOct2020
 
